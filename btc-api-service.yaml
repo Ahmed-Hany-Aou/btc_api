@@ -1,0 +1,24 @@
+# Kubernetes API version for Service
+apiVersion: v1
+# The kind of Kubernetes object we are creating
+kind: Service
+metadata:
+  # Name of our Service (e.g., btc-price-api-service)
+  name: btc-price-api-service
+spec:
+  # Selector to identify which Pods this Service should route traffic to.
+  # It matches Pods with the label 'app: btc-price-api'.
+  # This must match the labels defined in your Deployment's Pod template!
+  selector:
+    app: btc-price-api
+  # Define the ports for the Service
+  ports:
+    - protocol: TCP
+      port: 80         # The port the Service itself will listen on (clients connect here)
+      targetPort: 3000 # The port on the Pod/container that the Service will forward traffic to
+                       # This must match the containerPort: 3000 defined in your Deployment YAML!
+  # Type of Service:
+  # - ClusterIP: Default. Only accessible from inside the cluster.
+  # - NodePort: Exposes Service on a static port on each Node's IP. Accessible from outside.
+  # - LoadBalancer: (Most common for external access in cloud) Creates an external cloud load balancer (e.g., AWS ELB).
+  type: LoadBalancer

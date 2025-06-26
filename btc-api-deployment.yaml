@@ -1,0 +1,32 @@
+# Kubernetes API version for Deployment
+apiVersion: apps/v1
+# The kind of Kubernetes object we are creating
+kind: Deployment
+metadata:
+  name: btc-price-api-deployment
+  labels:
+    app: btc-price-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: btc-price-api
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: btc-price-api
+    spec:
+      containers:
+      - name: btc-price-api-container # This is the first container in the list
+        image: ahmedhanyaou/btc-price-api:latest # <<< NO DASH HERE, AND INDENTED CORRECTLY
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m" # 0.5 CPU core
+          requests:
+            memory: "64Mi"
+            cpu: "250m" # 0.25 CPU core
