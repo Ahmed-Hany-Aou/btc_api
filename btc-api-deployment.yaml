@@ -1,6 +1,4 @@
-# Kubernetes API version for Deployment
 apiVersion: apps/v1
-# The kind of Kubernetes object we are creating
 kind: Deployment
 metadata:
   name: btc-price-api-deployment
@@ -17,16 +15,35 @@ spec:
     metadata:
       labels:
         app: btc-price-api
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "{{ now }}"
     spec:
       containers:
-      - name: btc-price-api-container # This is the first container in the list
-        image: ahmedhanyaou/btc-price-api:latest # <<< NO DASH HERE, AND INDENTED CORRECTLY
+      - name: btc-price-api-container
+        image: ahmedhanyaou/btc-price-api:latest
         ports:
         - containerPort: 3000
-        resources:
+        # --- START OF HEALTHCHECK CONFIGURATION (USING exec) ---
+        # These blocks must be indented two more spaces than 'ports'
+        livenessProbe:
+          exec: # <<< CHANGED TO exec
+            command: ["curl", "http://localhost:3000/health"] # Command to run inside container
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec: # <<< CHANGED TO exec
+            command: ["curl", "http://localhost:3000/health"] # Command to run inside container
+          initialDelaySeconds: 25
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 1
+        # --- END OF HEALTHCHECK CONFIGURATION ---
+        resources: # <<< THIS BLOCK IS ALSO INDENTED CORRECTLY NOW
           limits:
             memory: "128Mi"
-            cpu: "500m" # 0.5 CPU core
+            cpu: "500m"
           requests:
             memory: "64Mi"
-            cpu: "250m" # 0.25 CPU core
+            cpu: "250m"

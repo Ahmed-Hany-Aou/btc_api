@@ -7,6 +7,9 @@
 #   - "alpine": A very small, lightweight Linux distribution, making the final image smaller.
 FROM node:20-alpine
 
+# Install curl for healthcheck probes
+RUN apk add --no-cache curl
+
 # STEP 2: Set the Working Directory
 # This command sets the default directory where our application code will live
 # inside the Docker container. All subsequent commands (like COPY, RUN, CMD)
